@@ -1,156 +1,102 @@
-# 🍎 AI Food Freshness Inspector
+# 🍎 FreshVision AI: Deep Learning Fruit Freshness Inspector
 
-> Classify fruits & vegetables as **Fresh or Rotten** using CNNs — with confidence scores and Grad-CAM explainability.
+> An end-to-end computer vision system to classify fruits as **Fresh or Rotten** using a fine-tuned MobileNetV2 architecture, featuring real-time Grad-CAM explainability via Streamlit.
 
 [![Python](https://img.shields.io/badge/Python-3.9%2B-blue)](https://python.org)
 [![TensorFlow](https://img.shields.io/badge/TensorFlow-2.x-orange)](https://tensorflow.org)
 [![Streamlit](https://img.shields.io/badge/App-Streamlit-red)](https://streamlit.io)
-[![HuggingFace](https://img.shields.io/badge/Deploy-HuggingFace%20Spaces-yellow)](https://huggingface.co/spaces)
 
 ---
 
-## 🎯 Project Overview
+## 🎯 Architecture Overview
 
-This project builds an end-to-end deep learning pipeline to detect whether a fruit or vegetable is **fresh or rotten**, using:
+FreshVision AI is designed as an end-to-end deep learning pipeline. The primary objective is not just accurate classification of fresh vs. rotten fruit, but providing **transparency in model decision-making** using XAI (Explainable AI) techniques.
 
-- **Custom CNN** (built from scratch to learn every layer)
-- **Transfer Learning** (EfficientNet-B0, MobileNetV2, ResNet-50)
-- **Grad-CAM** explainability (visualise what the CNN actually looks at)
-- **Streamlit App** (upload image → get prediction + heatmap)
+The system is separated into three core components:
+1. **Model Training & Fine-Tuning Pipeline**: Handles data ingestion, augmentation, transfer learning, and hyperparameter tuning.
+2. **Explainability Engine**: A Grad-CAM implementation that generates class activation maps specifically layered onto the final spatial convolution operations.
+3. **Inference UI (Streamlit)**: A robust, low-latency web interface allowing users to upload images or take live photos for immediate analysis.
 
-### 🗂️ Dataset
-- **Kaggle**: ["Fresh and Rotten Classification"](https://www.kaggle.com/datasets/swoyam2609/fresh-and-stale-images-of-fruits-and-vegetables)
-- 13,000+ images · 6 categories (fresh/rotten × apple, banana, orange)
-
----
-
-## 📁 Project Structure
-
-```
-food-freshness-inspector/
-│
-├── notebooks/                  # Jupyter / Colab notebooks
-│   ├── 01_data_exploration.ipynb
-│   ├── 02_custom_cnn.ipynb
-│   ├── 03_transfer_learning.ipynb
-│   ├── 04_grad_cam.ipynb
-│   └── 05_model_comparison.ipynb
-│
-├── src/                        # Reusable Python modules
-│   ├── data/
-│   │   ├── __init__.py
-│   │   ├── dataset.py          # Dataset loading & splitting
-│   │   └── augmentation.py     # Data augmentation pipelines
-│   ├── models/
-│   │   ├── __init__.py
-│   │   ├── custom_cnn.py       # CNN built from scratch
-│   │   └── transfer_models.py  # EfficientNet, MobileNet, ResNet wrappers
-│   ├── training/
-│   │   ├── __init__.py
-│   │   └── trainer.py          # Training loop, callbacks, logging
-│   ├── explainability/
-│   │   ├── __init__.py
-│   │   └── grad_cam.py         # Grad-CAM implementation
-│   └── utils/
-│       ├── __init__.py
-│       ├── visualise.py        # Plotting utilities
-│       └── metrics.py          # Evaluation helpers
-│
-├── app/                        # Streamlit deployment app
-│   ├── app.py
-│   ├── requirements.txt
-│   └── assets/
-│       └── demo.gif
-│
-├── configs/                    # Hyperparameter configs
-│   ├── custom_cnn_config.yaml
-│   └── transfer_config.yaml
-│
-├── models/                     # Saved model weights (gitignored)
-│   └── .gitkeep
-│
-├── results/                    # Training plots, metrics (gitignored)
-│   └── .gitkeep
-│
-├── requirements.txt            # Full dev requirements
-├── requirements-colab.txt      # Minimal Colab requirements
-└── README.md
-```
+### 🗂️ Dataset & Augmentation Strategy
+- **Base Dataset**: ["Fresh and Rotten Classification" on Kaggle](https://www.kaggle.com/datasets/swoyam2609/fresh-and-stale-images-of-fruits-and-vegetables).
+- **Categories**: 6 distinct classes (`freshapples`, `freshbanana`, `freshoranges`, `rottenapples`, `rottenbanana`, `rottenoranges`).
+- **Data Augmentation Strategies**: To combat overfitting and improve generalization across diverse lighting conditions and angles, we applied robust real-time augmentations using TensorFlow's `ImageDataGenerator`.
+  - Random rotations (up to 20°)
+  - Width & Height shifts
+  - Horizontal flipping & Random zooming
 
 ---
 
-## 🚀 Phases
+## 🧠 Deep Learning Architecture: MobileNetV2
 
-| Phase | Description | Status |
-|-------|-------------|--------|
-| 1 | Data Preparation | ⬜ |
-| 2 | Custom CNN (from scratch) | ⬜ |
-| 3 | Transfer Learning | ⬜ |
-| 4 | Grad-CAM Explainability | ⬜ |
-| 5 | Streamlit Deployment | ⬜ |
+We employ **Transfer Learning**, specifically utilizing the **MobileNetV2** architecture pre-trained on ImageNet.
+
+### Why MobileNetV2?
+MobileNetV2 provides an optimal trade-off between **latency and accuracy**. By leveraging **depthwise separable convolutions** and **inverted residual blocks with linear bottlenecks**, the model significantly reduces the parameter count compared to traditional networks like ResNet or VGG, making it ideal for real-time web deployment without sacrificing predictive performance.
+
+### Custom Head & Fine-Tuning Strategy
+1. **Base Extraction**: The foundational layers (ImageNet weights) are initially frozen. We extract features up to the last convolutional block.
+2. **Custom Classification Head**:
+   - `GlobalAveragePooling2D`: Replaces standard flattening to drastically reduce parameters and minimize overfitting.
+   - `Dense(128, ReLU)`: Adds required non-linear transformations specific to the fruit dataset.
+   - `Dropout(0.5)`: High regularization to ensure the network relies on diverse feature distributions.
+   - `Dense(6, Softmax)`: Outputs normalized probability distributions over the 6 classes.
+3. **Fine-Tuning**: After training the top layers, we unfreeze the later stages of the base MobileNetV2 architecture. We drastically reduce the learning rate (`1e-5`) and fine-tune using the `Adam` optimizer, allowing the model to refine its abstract representations (e.g., specific rot texture maps) rather than just edges and colors.
+
+---
+
+## 🔬 Explainable AI: Grad-CAM
+
+A key feature of FreshVision AI is its Explainable AI (XAI) component. Neural networks are often treated as "black boxes". We utilize **Gradient-weighted Class Activation Mapping (Grad-CAM)** to break this paradigm.
+
+### How Grad-CAM Works in This Project
+1. **Gradient Extraction**: During inference, we capture the gradient of the winning class's score with respect to the feature maps of the final convolutional layer (in MobileNetV2, this is the `out_relu` layer).
+2. **Global Average Pooling**: The gradients are globally average-pooled to obtain "neuron importance weights".
+3. **Weighted Feature Maps**: We compute a weighted sum of the layer's forward-activation maps.
+4. **ReLU Activation**: A ReLU is applied to the combination to isolate features that have a *positive* influence on the predicted class.
+5. **Upsampling & Overlay**: The resulting coarse heatmap (often 7x7) is upsampled back to the original image dimensions (224x224) using bicubic interpolation and overlaid using a `jet` colormap.
+
+**Interpretation:**
+- 🔴 **Red/Warm regions**: High attention. These are the specific textures or color gradients (like a bruised spot on an apple) that convinced the model of its prediction.
+- 🔵 **Blue/Cool regions**: Low attention. These are background elements or uninformative pixels that the model actively ignored.
+
+---
+
+## 🚀 Streamlit Deployment
+
+The frontend is constructed using Streamlit to offer a direct, seamless interface for inference.
+
+### Key Capabilities
+- **Dual Input Modes**: Supports standard file uploads (`JPG`, `PNG`, `WEBP`) or live capture via a webcam.
+- **Preprocessing Pipeline**: Integrates the identical image resizing and `[0, 1]` normalization steps used during training to prevent data drift between train/inference.
+- **Real-Time UI Rerendering**: Uses Streamlit's reactive framework and custom injected CSS for a professional, glassmorphism-inspired "app" feel.
+- **Full Transparency**: Outputs the exact confidence metric alongside a probability breakdown for all 6 classes.
 
 ---
 
 ## ⚡ Quick Start (Local Development)
 
+### Prerequisites
+- Python 3.9+
+- TensorFlow 2.x
+
 ```bash
-# Clone and enter directory
-cd food-freshness-inspector
+# 1. Clone the repository
+git clone https://github.com/7vaibhav31/Fruit_Checkup.git
+cd Fruit_Checkup
 
-# Create virtual environment
+# 2. Setup Virtual Environment
 python -m venv venv
-venv\Scripts\activate          # Windows
-source venv/bin/activate        # Mac/Linux
+# On Windows:
+venv\Scripts\activate
+# On Mac/Linux:
+source venv/bin/activate
 
-# Install dependencies
+# 3. Install Requirements
 pip install -r requirements.txt
 
-# Run the app
-streamlit run app/app.py
+# 4. Launch the AI Inspector
+cd pro
+streamlit run app.py
 ```
-
-## ☁️ Training on Google Colab
-
-Open any notebook in `notebooks/` — each is self-contained with dataset download and training code.
-
-```python
-# At the top of each Colab notebook:
-!pip install -r requirements-colab.txt
-```
-
----
-
-## 📊 Results
-
-*(To be filled after training)*
-
-| Model | Accuracy | Inference Time |
-|-------|----------|----------------|
-| Custom CNN | - | - |
-| MobileNetV2 | - | - |
-| EfficientNet-B0 | - | - |
-| ResNet-50 | - | - |
-
----
-
-## 🧠 Key Concepts Covered
-
-- Convolution & receptive fields
-- Batch Normalisation & Dropout
-- Data Augmentation strategies
-- Learning Rate Scheduling
-- Transfer Learning & Fine-tuning
-- Grad-CAM gradient-weighted class activation maps
-- Model export (`.h5`, `.pt`, ONNX)
-
----
-
-## 📸 Demo
-
-*(Grad-CAM heatmap overlay will go here)*
-
----
-
-## 👤 Author
-
-Built as a portfolio project demonstrating end-to-end CNN development for computer vision.
+*(The Streamlit app will automatically initialize locally at `http://localhost:8501`)*
