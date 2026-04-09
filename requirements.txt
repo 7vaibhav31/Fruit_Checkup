@@ -4,7 +4,7 @@
 # ============================================================
 
 # --- Deep Learning ---
-tensorflow>=2.10.0          # CNN training, transfer learning
+tensorflow-cpu>=2.10.0      # CNN training, transfer learning (CPU version prevents RAM crashes)
 
 # --- Data & Numerics ---
 numpy>=1.23.0               # Array operations
@@ -13,7 +13,7 @@ scikit-learn>=1.2.0         # Train/val/test split, metrics
 
 # --- Image Processing ---
 Pillow>=9.4.0               # Image loading and saving
-opencv-python>=4.7.0        # Grad-CAM overlay, image ops
+opencv-python-headless>=4.7.0 # Grad-CAM overlay (headless fixes libGL errors on Linux servers)
 
 # --- Visualisation ---
 matplotlib>=3.6.0           # Training curves, plots
