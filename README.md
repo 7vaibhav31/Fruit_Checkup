@@ -1,5 +1,7 @@
 # 🍎 FreshVision AI: Deep Learning Fruit Freshness Inspector
 
+DEPLOYED LINK: https://fruit-checkup-vaibhav.streamlit.app/
+
 > An end-to-end computer vision system to classify fruits as **Fresh or Rotten** using a fine-tuned MobileNetV2 architecture, featuring real-time Grad-CAM explainability via Streamlit.
 
 [![Python](https://img.shields.io/badge/Python-3.9%2B-blue)](https://python.org)
