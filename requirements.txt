@@ -1,0 +1,30 @@
+# ============================================================
+# AI Food Freshness Inspector — Requirements
+# Install with: pip install -r requirements.txt
+# ============================================================
+
+# --- Deep Learning ---
+tensorflow>=2.10.0          # CNN training, transfer learning
+
+# --- Data & Numerics ---
+numpy>=1.23.0               # Array operations
+pandas>=1.5.0               # Data manipulation
+scikit-learn>=1.2.0         # Train/val/test split, metrics
+
+# --- Image Processing ---
+Pillow>=9.4.0               # Image loading and saving
+opencv-python>=4.7.0        # Grad-CAM overlay, image ops
+
+# --- Visualisation ---
+matplotlib>=3.6.0           # Training curves, plots
+seaborn>=0.12.0             # Confusion matrix heatmaps
+
+# --- Streamlit App (Phase 5) ---
+streamlit>=1.28.0           # Web app for deployment
+
+# --- Kaggle Dataset Download ---
+kaggle>=1.5.16              # Download dataset via Kaggle API
+
+# --- Utilities ---
+tqdm>=4.65.0                # Progress bars during training
+PyYAML>=6.0                 # Load config .yaml files

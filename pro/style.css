@@ -1,0 +1,406 @@
+/* =========================================================
+   style.css — FreshVision AI · Streamlit custom styling
+   ========================================================= */
+
+/* ── Google Font ──────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@700;800&display=swap');
+
+/* ── Design tokens ────────────────────────────────────────── */
+:root {
+  --bg-dark:      #0a0f1e;
+  --bg-card:      #111827;
+  --bg-card2:     #1a2234;
+  --accent:       #00d4aa;
+  --accent2:      #7c5cff;
+  --accent3:      #ff6584;
+  --text:         #e8eaf0;
+  --text-muted:   #9aa0b8;
+  --border:       rgba(255,255,255,0.07);
+  --fresh-green:  #22c55e;
+  --rotten-red:   #ef4444;
+  --radius:       16px;
+  --shadow:       0 8px 32px rgba(0,0,0,0.45);
+  --glow-accent:  0 0 20px rgba(0,212,170,0.25);
+  --glow-purple:  0 0 20px rgba(124, 92,255,0.25);
+}
+
+/* ── Base reset ───────────────────────────────────────────── */
+html, body, [class*="css"] {
+  font-family: 'Inter', sans-serif !important;
+  background-color: var(--bg-dark) !important;
+  color: var(--text) !important;
+}
+
+/* ── Hide Streamlit chrome ────────────────────────────────── */
+#MainMenu, footer, header { visibility: hidden; }
+
+/* ── App-wide container padding ──────────────────────────── */
+.block-container {
+  padding: 2rem 2.5rem 4rem !important;
+  max-width: 1100px !important;
+}
+
+/* ══════════════════════════════════════════════════════════
+   HERO HEADER
+══════════════════════════════════════════════════════════ */
+.hero {
+  text-align: center;
+  padding: 3.5rem 2rem 2.5rem;
+  background: linear-gradient(135deg, #0f1a30 0%, #1a0f30 100%);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  margin-bottom: 2.5rem;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at 30% 40%, rgba(0,212,170,0.08) 0%, transparent 60%),
+              radial-gradient(circle at 70% 60%, rgba(124,92,255,0.08) 0%, transparent 60%);
+  pointer-events: none;
+}
+.hero-badge {
+  display: inline-block;
+  background: rgba(0,212,170,0.1);
+  border: 1px solid rgba(0,212,170,0.3);
+  color: var(--accent);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.35rem 1rem;
+  border-radius: 999px;
+  margin-bottom: 1.2rem;
+}
+.hero-title {
+  font-family: 'Poppins', sans-serif !important;
+  font-size: clamp(2.2rem, 5vw, 3.4rem) !important;
+  font-weight: 800 !important;
+  background: linear-gradient(135deg, #00d4aa 0%, #7c5cff 50%, #ff6584 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1.15 !important;
+  margin-bottom: 1rem !important;
+}
+.hero-subtitle {
+  font-size: 1.05rem !important;
+  color: var(--text-muted) !important;
+  max-width: 600px;
+  margin: 0 auto !important;
+  line-height: 1.7 !important;
+}
+
+/* ══════════════════════════════════════════════════════════
+   STAT CARDS (top row)
+══════════════════════════════════════════════════════════ */
+.stat-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+.stat-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.4rem 1.6rem;
+  text-align: center;
+  transition: transform 0.25s, box-shadow 0.25s;
+}
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow);
+}
+.stat-number {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+.stat-label {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 0.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* ══════════════════════════════════════════════════════════
+   UPLOAD / CAMERA SECTION
+══════════════════════════════════════════════════════════ */
+.upload-section {
+  background: var(--bg-card);
+  border: 2px dashed rgba(0,212,170,0.35);
+  border-radius: var(--radius);
+  padding: 2.2rem;
+  text-align: center;
+  margin-bottom: 2rem;
+  transition: border-color 0.25s, background 0.25s;
+}
+.upload-section:hover {
+  border-color: var(--accent);
+  background: rgba(0,212,170,0.03);
+}
+.upload-icon {
+  font-size: 3rem;
+  margin-bottom: 0.75rem;
+}
+.upload-title {
+  font-size: 1.15rem !important;
+  font-weight: 600 !important;
+  color: var(--text) !important;
+  margin-bottom: 0.4rem !important;
+}
+.upload-hint {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+/* ── Streamlit file-uploader styling ──────────────────────── */
+[data-testid="stFileUploader"] {
+  background: transparent !important;
+  border: none !important;
+}
+[data-testid="stFileUploader"] label {
+  color: var(--accent) !important;
+  font-weight: 500 !important;
+}
+
+/* ── Streamlit camera ────────────────────────────────────── */
+[data-testid="stCameraInput"] label {
+  color: var(--accent2) !important;
+  font-weight: 500 !important;
+}
+
+/* ══════════════════════════════════════════════════════════
+   RESULT CARD
+══════════════════════════════════════════════════════════ */
+.result-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 2rem;
+  margin-top: 2rem;
+  box-shadow: var(--shadow);
+}
+.result-fresh {
+  border-top: 4px solid var(--fresh-green);
+}
+.result-rotten {
+  border-top: 4px solid var(--rotten-red);
+}
+
+.result-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.2rem;
+}
+.result-emoji { font-size: 2.2rem; }
+.result-title {
+  font-size: 1.6rem !important;
+  font-weight: 700 !important;
+  margin: 0 !important;
+}
+.result-fresh-text { color: var(--fresh-green) !important; }
+.result-rotten-text { color: var(--rotten-red)  !important; }
+
+/* ── Confidence progress bar ─────────────────────────────── */
+.confidence-wrap {
+  margin: 1rem 0;
+}
+.confidence-label {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 0.4rem;
+}
+.confidence-bar-bg {
+  height: 10px;
+  background: var(--bg-card2);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.confidence-bar-fill-fresh {
+  height: 100%;
+  background: linear-gradient(90deg, #22c55e, #86efac);
+  border-radius: 999px;
+  transition: width 0.8s ease;
+}
+.confidence-bar-fill-rotten {
+  height: 100%;
+  background: linear-gradient(90deg, #ef4444, #fca5a5);
+  border-radius: 999px;
+  transition: width 0.8s ease;
+}
+
+/* ── Per-class probability bars ──────────────────────────── */
+.prob-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.45rem;
+}
+.prob-name {
+  width: 140px;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.prob-bar-bg {
+  flex: 1;
+  height: 8px;
+  background: var(--bg-card2);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.prob-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent2), var(--accent));
+  border-radius: 999px;
+}
+.prob-pct {
+  width: 48px;
+  font-size: 0.8rem;
+  text-align: right;
+  color: var(--text);
+}
+
+/* ══════════════════════════════════════════════════════════
+   GRAD-CAM PANEL
+══════════════════════════════════════════════════════════ */
+.gradcam-panel {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.8rem;
+  margin-top: 1.5rem;
+}
+.gradcam-title {
+  font-size: 1.1rem !important;
+  font-weight: 600 !important;
+  color: var(--accent2) !important;
+  margin-bottom: 0.6rem !important;
+}
+.gradcam-desc {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 1.2rem;
+}
+
+/* ══════════════════════════════════════════════════════════
+   INFO BOX
+══════════════════════════════════════════════════════════ */
+.info-box {
+  background: rgba(124,92,255,0.07);
+  border: 1px solid rgba(124,92,255,0.25);
+  border-radius: 10px;
+  padding: 1rem 1.3rem;
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  margin-top: 1rem;
+}
+.info-box strong { color: var(--accent2); }
+
+/* ══════════════════════════════════════════════════════════
+   SIDEBAR STYLING
+══════════════════════════════════════════════════════════ */
+[data-testid="stSidebar"] {
+  background: var(--bg-card) !important;
+  border-right: 1px solid var(--border) !important;
+}
+[data-testid="stSidebar"] .block-container {
+  padding: 2rem 1.2rem !important;
+}
+.sidebar-logo {
+  text-align: center;
+  margin-bottom: 1.8rem;
+}
+.sidebar-logo-text {
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #00d4aa, #7c5cff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.sidebar-section {
+  margin-bottom: 1.5rem;
+}
+.sidebar-section-title {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  margin-bottom: 0.6rem;
+  font-weight: 600;
+}
+.class-chip {
+  display: inline-block;
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  margin: 0.2rem 0.15rem;
+}
+.chip-fresh  { background: rgba(34,197,94,0.15);  color: var(--fresh-green); border: 1px solid rgba(34,197,94,0.3); }
+.chip-rotten { background: rgba(239,68,68,0.15);  color: var(--rotten-red);  border: 1px solid rgba(239,68,68,0.3);  }
+
+/* ══════════════════════════════════════════════════════════
+   STREAMLIT BUTTON OVERRIDES
+══════════════════════════════════════════════════════════ */
+.stButton > button {
+  background: linear-gradient(135deg, var(--accent), var(--accent2)) !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 999px !important;
+  font-weight: 600 !important;
+  padding: 0.55rem 1.8rem !important;
+  letter-spacing: 0.04em !important;
+  transition: opacity 0.2s, transform 0.2s !important;
+}
+.stButton > button:hover {
+  opacity: 0.88 !important;
+  transform: translateY(-2px) !important;
+}
+
+/* ── Streamlit tabs ───────────────────────────────────────── */
+[data-testid="stTabs"] [role="tablist"] {
+  gap: 0.5rem;
+  border-bottom: 1px solid var(--border) !important;
+}
+[data-testid="stTabs"] button {
+  background: transparent !important;
+  border: none !important;
+  color: var(--text-muted) !important;
+  font-weight: 500 !important;
+  padding: 0.6rem 1.2rem !important;
+  transition: color 0.2s !important;
+}
+[data-testid="stTabs"] button[aria-selected="true"] {
+  color: var(--accent) !important;
+  border-bottom: 2px solid var(--accent) !important;
+}
+
+/* ── Divider ─────────────────────────────────────────────── */
+hr { border-color: var(--border) !important; }
+
+/* ══════════════════════════════════════════════════════════
+   FOOTER
+══════════════════════════════════════════════════════════ */
+.app-footer {
+  text-align: center;
+  padding: 2rem 0 1rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  border-top: 1px solid var(--border);
+  margin-top: 3rem;
+}
+.app-footer a { color: var(--accent); text-decoration: none; }
