@@ -7,7 +7,7 @@
 tensorflow-cpu>=2.10.0      # CNN training, transfer learning (CPU version prevents RAM crashes)
 
 # --- Data & Numerics ---
-numpy>=1.23.0               # Array operations
+numpy>=1.23.0,<2.0.0        # Array operations (pinned <2.0.0 for TF compatibility)
 pandas>=1.5.0               # Data manipulation
 scikit-learn>=1.2.0         # Train/val/test split, metrics
 
